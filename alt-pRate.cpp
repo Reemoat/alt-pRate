@@ -1,24 +1,13 @@
-#include "headers/alt-pRate.h"
+//#include "headers/alt-pRate.h"
 
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <ctime>
 
-//#include <pbc.h>
-//#include "pbcwrapper/PBC.h"
+#include <pbc.h>
+#include "headers/pbcwrapper/PBC.h"
 using namespace std;
-using namespace public_param;
-
-/*struct public_parameters {
-    int n;
-    int t;
-    int v;
-    mpz_t p;
-    pairing_t e;
-    element_t g_1;
-    element_t g_2;
-    element_t u;
-};*/
 
 void extract_order(char param[], mpz_t p) {
     int i = 0;
@@ -55,37 +44,57 @@ void extract_order(char param[], mpz_t p) {
 int main() { //int argc, char *argv[]) {
     //char *ptr;
     //int v = strtol(argv[1], &ptr, 10);
-    int i;
-    public_parameters pp;
-    FILE *fp;
+    //public_parameters pp;
     char param[1024];
+    int managers[3];
+    int n;
+    int t;
+    int v;
+    mpz_t p;
+    pairing_t e;
+    element_t g_1;
+    element_t g_2;
+    element_t u;
     int output;
-    fp = fopen("headers/pbc-0.5.14/param/f.param", "r");
+    FILE *fp = fopen("headers/pbc-0.5.14/param/f.param", "r");
     size_t count = fread(param, 1, 1024, fp);
+    ofstream output_file;
 
     if (!count) {
         pbc_die("input error");
     }
 
-    output = pairing_init_set_buf(pp.e, param, count);
+    output = pairing_init_set_buf(e, param, count);
 
     if (output != 0) {
       return EXIT_FAILURE;
     }
 
-    mpz_init(pp.p);
-    extract_order(param, pp.p);
-    pp.n = 3;
-    pp.t = 1;
-    pp.v = 5;
-    element_init_G1(pp.g_1, pp.e);
-    element_init_G1(pp.u, pp.e);
-    element_init_G2(pp.g_2, pp.e);
-    srand(time(0));
-    element_random(pp.g_1);
-    element_random(pp.u);
-    element_random(pp.g_2);
+    mpz_init(p);
+    extract_order(param, p);
+    n = 3;
+    t = 1;
+
+    for (int i=0; i < n; i++) {
+        managers[i] = i + 1;
+    }
+
+    v = 5;
+    element_init_G1(g_1, e);
+    element_init_G1(u, e);
+    element_init_G2(g_2, e);
+    element_random(g_1);
+    element_random(u);
+    element_random(g_2);
     fclose(fp);
+    output_file.open("public_parameters");
+    output_file << param << "m1: " << managers[0] << ", m2: " << managers[1]
+        << ", m3: " << managers[2] << "\nn:" << n << "\nt:" << t << "\nv:" <<
+        v << "\n";
+    output_file.close();
+    fp = fopen("public_parameters", "a");
+    gmp_fprintf(fp, "p: %Zd\n", p);
+    element_fprintf(fp, "g1: %B\ng2: %B\nu: %B\n", g_1, g_2, u);
 
     return 0;
 }
