@@ -1,4 +1,4 @@
 *.o
-setup
-public_parameters
-geni
+setup/setup
+setup/public_parameters
+generate_issuing_key/geni
