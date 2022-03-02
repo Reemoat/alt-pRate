@@ -1,15 +1,13 @@
-//#include "headers/alt-pRate.h"
-
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
 
 #include <pbc.h>
-#include "headers/pbcwrapper/PBC.h"
+#include "../pbcwrapper/PBC.h"
 using namespace std;
 
-void extract_order(char param[], mpz_t p) {
+/*void extract_order(char param[], mpz_t p) {
     int i = 0;
     int j = 0;
     int length = 0;
@@ -39,7 +37,7 @@ void extract_order(char param[], mpz_t p) {
     }
 
     mpz_set_str(p, order, 10);
-}
+}*/
 
 int main() { //int argc, char *argv[]) {
     //char *ptr;
@@ -50,13 +48,13 @@ int main() { //int argc, char *argv[]) {
     int n;
     int t;
     int v;
-    mpz_t p;
+    //mpz_t p;
     pairing_t e;
     element_t g_1;
     element_t g_2;
     element_t u;
     int output;
-    FILE *fp = fopen("headers/pbc-0.5.14/param/f.param", "r");
+    FILE *fp = fopen("../pbc-0.5.14/param/f.param", "r");
     size_t count = fread(param, 1, 1024, fp);
     ofstream output_file;
 
@@ -70,8 +68,8 @@ int main() { //int argc, char *argv[]) {
       return EXIT_FAILURE;
     }
 
-    mpz_init(p);
-    extract_order(param, p);
+    //mpz_init(p);
+    //extract_order(param, p);
     n = 3;
     t = 1;
 
@@ -87,13 +85,13 @@ int main() { //int argc, char *argv[]) {
     element_random(u);
     element_random(g_2);
     fclose(fp);
-    output_file.open("public_parameters");
-    output_file << param << "m1: " << managers[0] << ", m2: " << managers[1]
+    output_file.open("../public_parameters");
+    output_file << "m1: " << managers[0] << ", m2: " << managers[1]
         << ", m3: " << managers[2] << "\nn:" << n << "\nt:" << t << "\nv:" <<
         v << "\n";
     output_file.close();
-    fp = fopen("public_parameters", "a");
-    gmp_fprintf(fp, "p: %Zd\n", p);
+    fp = fopen("../public_parameters", "a");
+    //gmp_fprintf(fp, "p: %Zd\n", p);
     element_fprintf(fp, "g1: %B\ng2: %B\nu: %B\n", g_1, g_2, u);
 
     return 0;
