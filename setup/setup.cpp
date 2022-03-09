@@ -34,8 +34,8 @@ int main() {
     element_random(u);
     element_random(g_2);
     output_file.open("../public_parameters");
-    output_file << "m1:" << managers[0] << ", m2:" << managers[1]
-        << ", m3:" << managers[2] << "\nn:" << n << "\nt:" << t << "\nv:" <<
+    output_file << "m1:" << managers[0] << "\nm2:" << managers[1]
+        << "\nm3:" << managers[2] << "\nn:" << n << "\nt:" << t << "\nv:" <<
         v << "\n";
     output_file.close();
     fp = fopen("../public_parameters", "a");

@@ -14,6 +14,7 @@ struct pairing_parameters {
 struct pairing_parameters initialize_pairing();
 void extract_element(element_t g, char name[2], pairing_t e);
 int extract_int(char name);
+int extract_int(char name[2]);
 void get_order(mpz_t order);
 
 } // alt_prate

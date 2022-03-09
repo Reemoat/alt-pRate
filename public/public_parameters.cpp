@@ -76,6 +76,37 @@ int alt_prate::extract_int(char name) {
     return int_param;
 }
 
+int alt_prate::extract_int(char name[2]) {
+    int i = 0;
+    char parameter[1024];
+    int int_param;
+    char previous;
+    char current;
+    ifstream public_parameters("../public_parameters");
+
+    public_parameters.get(previous);
+    public_parameters.get(current);
+
+    while (!(previous == name[0] && current == name[1])) {
+        previous = current;
+        public_parameters.get(current);
+    }
+
+    public_parameters.get(current);
+    public_parameters.get(parameter[i]);
+
+    while (parameter[i] != '\n') {
+        i++;
+        public_parameters.get(parameter[i]);
+    }
+
+    parameter[i] = '\0';
+    int_param = strtol(parameter, NULL, 10);
+    public_parameters.close();
+
+    return int_param;
+}
+
 void alt_prate::get_order(mpz_t order) {
     ifstream parameters("../pbc-0.5.14/param/f.param");
     char current;
