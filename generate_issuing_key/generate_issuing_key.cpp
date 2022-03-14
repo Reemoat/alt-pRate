@@ -1,28 +1,33 @@
 #include "generate_issuing_key.h"
 
-#include <cstdlib>
 #include <iostream>
 #include <fstream>
-
-#include <pbc.h>
-#include "../pbcwrapper/PBC.h"
 
 #include "../public/public_parameters.h"
 using namespace issue;
 using namespace std;
 using namespace alt_prate;
 
-int main() {
+int main(int argc, char* argv[]) {
     struct pairing_parameters pp;
     element_t h;
     element_t g2;
     char element_name[] = "g2";
+    int id;
     int v;
     int n;
     int t;
     char m[2];
     mpz_t p;
     isk isk_i;
+    struct share key_share;
+
+    if (argc != 2) {
+        cout << "Pass one integer as an argument" << endl;
+        return EXIT_FAILURE;
+    } else {
+        id = argv[1][0] - '0';
+    }
 
     pp = initialize_pairing();
     mpz_init(p);
@@ -41,6 +46,8 @@ int main() {
         m[1] = '0' + i;
         manager[i-1] = extract_int(m);
     }
+
+    key_share = generate_share(p, n, t, g2, h, id, manager);
 
     return 0;
 }
