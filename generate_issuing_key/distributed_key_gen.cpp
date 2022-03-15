@@ -4,7 +4,7 @@
 #include <ctime>
 #include <iostream>
 
-long long int mulmod(long long int a, long long int b, long long int m) {
+/*long long int mulmod(long long int a, long long int b, long long int m) {
     long long int x = 0;
     long long int y = a % m;
 
@@ -65,22 +65,21 @@ bool is_prime(long long int number) {
        }
     }
     return true;
-}
+}*/
 
 struct issue::share issue::generate_share(mpz_t p, int n, int t, element_t g,
                                    element_t h, int id, int m[3]) {
     int a[t];
     int b[t];
-    long long int q;
+    mpz_t q;
     struct share key_share;
     bool dummy;
+    mpz_t decrement_p;
 
-    srand(time(NULL));
-    q = rand();
-
-    while (q <= 3 || !is_prime(q)) {
-        q = rand();
-    }
+    mpz_init(decrement_p);
+    mpz_sub_ui(decrement_p, p, 1);
+    mpz_init(q);
+    mpz_cdiv_q_ui(q, decrement_p, 28); // prime number
 
     return key_share;
 }
