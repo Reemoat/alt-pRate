@@ -71,15 +71,52 @@ struct issue::share issue::generate_share(mpz_t p, int n, int t, element_t g,
                                    element_t h, int id, int m[3]) {
     int a[t];
     int b[t];
+    int zi;
+    mpz_t c[t];
     mpz_t q;
     struct share key_share;
     bool dummy;
     mpz_t decrement_p;
+    mpz_t mpz_g;
+    mpz_t mpz_h;
 
     mpz_init(decrement_p);
     mpz_sub_ui(decrement_p, p, 1);
     mpz_init(q);
     mpz_cdiv_q_ui(q, decrement_p, 28); // prime number
+    srand(time(NULL));
+
+    for (int j = 0; j < t; j++) {
+        a[j] = rand() % 10000; // Limited to 10000 for faster performance
+        b[j] = rand() % 10000; // Theoretically, goes up to q
+    }
+
+    zi = a[0];
+    mpz_init(mpz_g);
+    mpz_init(mpz_h);
+    element_to_mpz(mpz_g, g);
+    element_to_mpz(mpz_h, h);
+
+    for (int j = 0; j < t; j++) {
+        mpz_init(c[j]);
+        mpz_set_ui(c[j], 1);
+        
+        for (int i = 0; i < a[j]; i++) {
+            mpz_mul(c[j], c[j], mpz_g);
+
+            if (mpz_cmp(c[j], q) > 0) {
+                mpz_cdiv_r(c[j], c[j], q);
+            }
+        }
+        
+        for (int i = 0; i < b[j]; i++) {
+            mpz_mul(c[j], c[j], mpz_h);
+
+            if (mpz_cmp(c[j], q) > 0) {
+                mpz_cdiv_r(c[j], c[j], q);
+            }
+        }
+    }
 
     return key_share;
 }
